@@ -1,7 +1,17 @@
 import { useState, type ReactNode } from 'react'
 import { motion } from 'framer-motion'
 import CodeView from '../../code/CodeView'
-import type { TraceData } from '../../content/schemas'
+import type { TraceData, TraceStep } from '../../content/schemas'
+
+// Scans backwards from step i to find the last step (<= i) that defined
+// `key`, so goroutine/channel panels persist state across steps that omit it.
+function lastDefined<K extends 'goroutines' | 'channels'>(steps: TraceStep[], i: number, key: K): TraceStep[K] | undefined {
+  for (let idx = i; idx >= 0; idx--) {
+    const val = steps[idx]?.[key]
+    if (val !== undefined) return val
+  }
+  return undefined
+}
 
 export default function Trace({ data }: { data: TraceData }) {
   const [i, setI] = useState(0)
@@ -12,8 +22,8 @@ export default function Trace({ data }: { data: TraceData }) {
   const output = steps.slice(0, i + 1).map((s) => s.out ?? '').join('')
   const hasGoroutines = steps.some((s) => s.goroutines)
   const hasChannels = steps.some((s) => s.channels)
-  const goroutines = step.goroutines ?? prev?.goroutines ?? []
-  const channels = step.channels ?? prev?.channels ?? {}
+  const goroutines = lastDefined(steps, i, 'goroutines') ?? []
+  const channels = lastDefined(steps, i, 'channels') ?? {}
 
   return (
     <section
@@ -48,11 +58,11 @@ export default function Trace({ data }: { data: TraceData }) {
             <table data-testid="trace-vars" className="w-full font-mono text-xs">
               <tbody>
                 {Object.entries(step.vars ?? {}).map(([k, v]) => {
-                  const changed = prev?.vars?.[k] !== v
+                  const changed = prev !== undefined && prev.vars?.[k] !== v
                   return (
                     <tr key={k} className="border-t border-edge/60">
                       <td className="py-1 pr-3 text-sky">{k}</td>
-                      <motion.td key={v} initial={changed ? { backgroundColor: 'rgba(253,221,0,0.35)' } : false} animate={{ backgroundColor: 'rgba(253,221,0,0)' }} transition={{ duration: 0.8 }} className="py-1">{v}</motion.td>
+                      <motion.td key={v} data-changed={changed} initial={changed ? { backgroundColor: 'rgba(253,221,0,0.35)' } : false} animate={{ backgroundColor: 'rgba(253,221,0,0)' }} transition={{ duration: 0.8 }} className="py-1">{v}</motion.td>
                     </tr>
                   )
                 })}

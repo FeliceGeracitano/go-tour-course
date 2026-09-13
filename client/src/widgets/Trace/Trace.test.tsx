@@ -55,3 +55,31 @@ test('omits goroutine and channel panels when no step defines them', () => {
   expect(screen.queryByText(/goroutines/i)).not.toBeInTheDocument()
   expect(screen.queryByText(/channels/i)).not.toBeInTheDocument()
 })
+
+test('goroutines and channels persist from the last step that defined them', async () => {
+  render(<Trace data={data} />)
+  const next = screen.getByRole('button', { name: /next/i })
+  await userEvent.click(next)
+  await userEvent.click(next)
+  expect(screen.getByText('main')).toBeInTheDocument()
+  expect(screen.getByTestId('trace-chan-ch')).toBeInTheDocument()
+})
+
+test('a variable that changes value is flagged', async () => {
+  render(
+    <Trace
+      data={{
+        code: 'x := 1\nx = 2',
+        lang: 'go',
+        steps: [
+          { line: 1, note: 'a', vars: { x: '1' } },
+          { line: 2, note: 'b', vars: { x: '2' } },
+        ],
+      }}
+    />,
+  )
+  const cell = () => screen.getByTestId('trace-vars').querySelector('[data-changed]')
+  expect(cell()).toHaveAttribute('data-changed', 'false')
+  await userEvent.click(screen.getByRole('button', { name: /next/i }))
+  expect(cell()).toHaveAttribute('data-changed', 'true')
+})
