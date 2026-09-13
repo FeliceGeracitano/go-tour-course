@@ -19,6 +19,13 @@ npm test           # unit tests + content validation
 - `content/**/*.md` — lessons; interactive blocks are fenced `annotate`, `trace`, `quiz`, `diagram` blocks with a YAML body
 - `client/` — Vite + React app
 
+## Deploy
+
+Pushes to `main` run `.github/workflows/ci.yml`: tests, typecheck, build with
+`VITE_BASE=/go-tour-course/`, then deploy to GitHub Pages. One-time setup: repository
+**Settings → Pages → Source: GitHub Actions**. Progress is stored in the browser's
+`localStorage`; nothing is sent anywhere.
+
 ## Credits
 
 Gopher by [Renee French](https://reneefrench.blogspot.com/) (CC BY 3.0), vector by
