@@ -3,6 +3,7 @@ import { join, relative, resolve } from 'node:path'
 import { expect, test } from 'vitest'
 import { course } from './manifest'
 import { validateContent, type ContentFile } from './validate'
+import { extractWidgetBlocks } from './parse'
 import { DIAGRAM_IDS } from '../widgets/diagrams/registry'
 
 const contentRoot = resolve(import.meta.dirname, '../../../content')
@@ -20,4 +21,11 @@ function readMarkdownFiles(dir: string): ContentFile[] {
 test('all course content is valid', () => {
   const issues = validateContent(course, readMarkdownFiles(contentRoot), DIAGRAM_IDS)
   expect(issues.map((i) => `${i.file}: ${i.message}`)).toEqual([])
+})
+
+test('every published lesson is authored and includes a quiz', () => {
+  for (const file of readMarkdownFiles(contentRoot)) {
+    expect(file.text, file.path).not.toMatch(/coming soon|planned but not written/i)
+    expect(extractWidgetBlocks(file.text).some((block) => block.lang === 'quiz'), file.path).toBe(true)
+  }
 })

@@ -83,7 +83,7 @@
         ]},
         { "id": "io", "title": "I/O & files", "lessons": [
           { "id": "reading_files", "title": "Reading files with bufio", "file": "part2_patterns/io/reading_files.md", "ref": "https://gobyexample.com/reading-files", "tags": ["io", "files"], "problem": "Read a file line by line without loading it all." },
-          { "id": "writing_files", "title": "Writing files atomically", "file": "part2_patterns/io/writing_files.md", "ref": "https://gobyexample.com/writing-files", "tags": ["io", "files"], "problem": "Never leave a half-written file behind." },
+          { "id": "writing_files", "title": "Writing files atomically", "file": "part2_patterns/io/writing_files.md", "ref": "https://gobyexample.com/writing-files", "tags": ["io", "files"], "problem": "Replace a file after writing it, with explicit platform and durability limits." },
           { "id": "embed", "title": "//go:embed", "file": "part2_patterns/io/embed.md", "ref": "https://gobyexample.com/embed-directive", "tags": ["io", "build"], "problem": "Ship static assets inside the binary." }
         ]},
         { "id": "http", "title": "HTTP", "lessons": [
@@ -96,7 +96,7 @@
         { "id": "testing", "title": "Testing", "lessons": [
           { "id": "table_driven", "title": "Table-driven tests", "file": "part2_patterns/testing/table_driven.md", "ref": "https://go.dev/wiki/TableDrivenTests", "tags": ["testing"], "problem": "Cover many inputs without copy-pasting test functions." },
           { "id": "subtests_helpers", "title": "Subtests & t.Helper", "file": "part2_patterns/testing/subtests_helpers.md", "ref": "https://go.dev/blog/subtests", "tags": ["testing"], "problem": "Name cases, run one of them, and keep failure lines useful." },
-          { "id": "httptest", "title": "httptest", "file": "part2_patterns/testing/httptest.md", "ref": "https://pkg.go.dev/net/http/httptest", "tags": ["testing", "http"], "problem": "Test handlers and clients without a real network." },
+          { "id": "httptest", "title": "httptest", "file": "part2_patterns/testing/httptest.md", "ref": "https://pkg.go.dev/net/http/httptest", "tags": ["testing", "http"], "problem": "Test handlers and clients without an external service." },
           { "id": "golden_files", "title": "Golden files", "file": "part2_patterns/testing/golden_files.md", "ref": "https://pkg.go.dev/testing", "tags": ["testing"], "problem": "Assert large outputs by comparing against a stored file." },
           { "id": "benchmarks_fuzz", "title": "Benchmarks & fuzzing", "file": "part2_patterns/testing/benchmarks_fuzz.md", "ref": "https://go.dev/doc/tutorial/fuzz", "tags": ["testing", "performance"], "problem": "Measure speed and let the tool find inputs that break you." }
         ]},

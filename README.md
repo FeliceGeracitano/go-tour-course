@@ -11,7 +11,19 @@ cd client
 npm install
 npm run dev        # → http://localhost:5173
 npm test           # unit tests + content validation
+npm run check:go   # compile/run lesson examples; requires Go 1.25+
 ```
+
+All 73 lessons are authored: 33 Tour lessons, 34 practical patterns, and six
+toolchain lessons. Each includes interactive exercises. Start with Getting Started,
+follow the Tour, then use the patterns index as a reference.
+See [course status and verification](docs/course-status.md) for the completed scope.
+
+The Go example check extracts programs and prediction questions from Markdown,
+compiles them, checks declared output, and runs embedded test examples. Supporting
+files for multi-file examples live in `content/example-fixtures.json`. Add `-- --race`
+to run with Go's race detector. Shell recipes and deliberately invalid quiz snippets
+are reviewed separately, not executed by this check.
 
 ## Layout
 
@@ -21,9 +33,10 @@ npm test           # unit tests + content validation
 
 ## Deploy
 
-Pushes to `main` run `.github/workflows/ci.yml`: tests, typecheck, build with
-`VITE_BASE=/go-tour-course/`, then deploy to GitHub Pages. One-time setup: repository
-**Settings → Pages → Source: GitHub Actions**. Progress is stored in the browser's
+Amplify uses `amplify.yml` to install the client dependencies, build the site, and
+publish `client/dist`. Configure the connected branch and SPA rewrite in Amplify.
+Run `npm test`, `npm run typecheck`, and `npm run check:go -- --race` from `client/`
+before publishing lesson changes. Progress is stored in the browser's
 `localStorage`; nothing is sent anywhere.
 
 ## Credits

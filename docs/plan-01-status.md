@@ -1,5 +1,8 @@
 # Plan 1 — Scaffold and introductory lessons
 
+Historical phase report. See [current course status](course-status.md) for the
+completed lesson content and current hosting setup.
+
 Completed on 2026-09-13. This repository note supersedes the older planning
 memory that still says execution is pending.
 

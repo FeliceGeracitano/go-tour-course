@@ -1,0 +1,12 @@
+{
+  "part2_patterns/io/embed.md": {
+    "assets/message.txt": "hello Go\n"
+  },
+  "part2_patterns/testing/golden_files.md": {
+    "testdata/report.golden": "items: 2\n"
+  },
+  "part2_patterns/project/module_layout.md": {
+    "go.mod": "module example.com/shop\n\ngo 1.25.0\n",
+    "internal/catalog/catalog.go": "package catalog\n\nfunc Label(name string) string { return \"product: \" + name }\n"
+  }
+}
