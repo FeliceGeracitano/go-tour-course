@@ -15,23 +15,26 @@ export default function LessonMarkdown({ markdown, lessonId }: { markdown: strin
   // Fence line → block, so a quiz knows its index within the lesson (progress key).
   const blocksByLine = useMemo(() => new Map(extractWidgetBlocks(markdown).map((b) => [b.line, b])), [markdown])
 
-  const components: Components = {
-    pre: ({ children }) => <>{children}</>,
-    code: ({ className, children, node }) => {
-      const match = /language-([\w-]+)/.exec(className ?? '')
-      if (!match) {
-        return <code className="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[0.85em] text-sky">{children}</code>
-      }
-      const lang = match[1]!
-      const text = String(children ?? '').replace(/\n$/, '')
-      if (isWidgetLang(lang)) {
-        const line = node?.position?.start.line
-        return <Widget lang={lang} raw={text} block={line === undefined ? undefined : blocksByLine.get(line)} lessonId={lessonId} />
-      }
-      const codeLang: Lang = lang === 'go' || lang === 'bash' ? lang : 'text'
-      return <CodeBlock code={text} lang={codeLang} />
-    },
-  }
+  const components: Components = useMemo(
+    () => ({
+      pre: ({ children }) => <>{children}</>,
+      code: ({ className, children, node }) => {
+        const match = /language-([\w-]+)/.exec(className ?? '')
+        if (!match) {
+          return <code className="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[0.85em] text-sky">{children}</code>
+        }
+        const lang = match[1]!
+        const text = String(children ?? '').replace(/\n$/, '')
+        if (isWidgetLang(lang)) {
+          const line = node?.position?.start.line
+          return <Widget lang={lang} raw={text} block={line === undefined ? undefined : blocksByLine.get(line)} lessonId={lessonId} />
+        }
+        const codeLang: Lang = lang === 'go' || lang === 'bash' ? lang : 'text'
+        return <CodeBlock code={text} lang={codeLang} />
+      },
+    }),
+    [blocksByLine, lessonId],
+  )
 
   return (
     <div className="prose-go">

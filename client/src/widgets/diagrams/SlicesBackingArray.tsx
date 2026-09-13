@@ -42,7 +42,7 @@ export default function SlicesBackingArray(_: DiagramProps) {
         </span>
       </header>
 
-      <div className="rounded-xl border border-edge bg-surface p-4">
+      <div className="overflow-x-auto rounded-xl border border-edge bg-surface p-4">
         <div className="mb-3 font-mono text-sm text-sun">{frame.code}</div>
         <div className="mb-1 text-[11px] uppercase tracking-wide text-muted">{frame.arrayLabel}</div>
         <div data-testid="array-cells" className="flex gap-1">

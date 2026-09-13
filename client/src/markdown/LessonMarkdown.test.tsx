@@ -1,8 +1,15 @@
 import { render, screen } from '@testing-library/react'
-import { expect, test, vi } from 'vitest'
+import userEvent from '@testing-library/user-event'
+import { beforeEach, expect, test, vi } from 'vitest'
+import { reloadProgress } from '../store/progress'
 import LessonMarkdown from './LessonMarkdown'
 
 vi.mock('../code/highlighter', () => ({ tokenize: async () => null }))
+
+beforeEach(() => {
+  localStorage.clear()
+  reloadProgress()
+})
 
 test('renders prose, inline code, and plain go fences through CodeBlock', () => {
   const md = '# Hi\n\nUse `fmt` here.\n\n```go\nfmt.Println("x")\n```\n'
@@ -33,4 +40,13 @@ test('shows an inline error card for an invalid widget block', () => {
 test('renders GFM tables', () => {
   render(<LessonMarkdown markdown={'| a | b |\n|---|---|\n| 1 | 2 |\n'} lessonId="l" />)
   expect(screen.getByRole('table')).toBeInTheDocument()
+})
+
+test('widget state survives a parent re-render', async () => {
+  const md = '```quiz\ntype: mcq\nquestion: q\noptions: [a, b]\nanswer: 0\nexplain: e\n```\n'
+  const { rerender } = render(<LessonMarkdown markdown={md} lessonId="stable" />)
+  await userEvent.click(screen.getByRole('button', { name: 'a' }))
+  expect(screen.getByTestId('quiz-result')).toBeInTheDocument()
+  rerender(<LessonMarkdown markdown={md} lessonId="stable" />)
+  expect(screen.getByTestId('quiz-result')).toBeInTheDocument()
 })

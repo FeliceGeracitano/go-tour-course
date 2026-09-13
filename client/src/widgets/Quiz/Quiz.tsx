@@ -39,7 +39,7 @@ export default function Quiz({ data, quizKey }: { data: QuizData; quizKey: strin
       ) : (
         <>
           {data.code && <CodeView code={data.code} className="mb-3" />}
-          <ul className="grid gap-2 sm:grid-cols-2">
+          <ul className="m-0 list-none grid gap-2 p-0 sm:grid-cols-2">
             {data.options.map((opt, i) => {
               const state = !answered ? 'idle' : i === data.answer ? 'correct' : i === picked ? 'wrong' : 'idle'
               return (
