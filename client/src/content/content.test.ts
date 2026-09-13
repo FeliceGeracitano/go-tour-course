@@ -3,8 +3,8 @@ import { join, relative, resolve } from 'node:path'
 import { expect, test } from 'vitest'
 import { course } from './manifest'
 import { validateContent, type ContentFile } from './validate'
+import { DIAGRAM_IDS } from '../widgets/diagrams/registry'
 
-const DIAGRAM_IDS = ['slices-backing-array'] // Task 12 replaces this with the registry export
 const contentRoot = resolve(import.meta.dirname, '../../../content')
 
 function readMarkdownFiles(dir: string): ContentFile[] {
