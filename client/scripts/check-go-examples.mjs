@@ -15,12 +15,15 @@ const lessons = course.parts.flatMap(p => p.chapters.flatMap(c => c.lessons))
 const fixtures = JSON.parse(await readFile(join(root, 'example-fixtures.json'), 'utf8'))
 const examples = []
 const excerpts = []
+const sourceSnippets = []
 const race = process.argv.includes('--race')
 for (const lesson of lessons) {
   const tree = unified().use(remarkParse).parse(await readFile(join(root, lesson.file), 'utf8'))
   function visit(node) {
     if (node.type === 'code') {
       let code = node.lang === 'go' ? node.value : node.lang === 'annotate' ? yaml.load(node.value).code : ''
+      const source = code.match(/^\/\/ Source: (examples\/large-service\/[^\n]+)\n([\s\S]*)$/)
+      if (source) sourceSnippets.push({ file: lesson.file, source: source[1], code: source[2] })
       // Prediction questions in this course either contain a full main or a function-body fragment.
       let expected
       if (node.lang === 'quiz') {
@@ -89,6 +92,25 @@ try {
   await Promise.all(Array.from({ length: 4 }, worker))
 } finally {
   await rm(workspace, { recursive: true, force: true })
+}
+// Verify the multi-package service and ensure displayed excerpts match compiled source.
+const repository = resolve(root, '..')
+const serviceRoot = join(repository, 'examples/large-service')
+// Markdown uses spaces for indentation; Go source keeps gofmt's leading tabs.
+const displayIndent = code => code.replace(/^\t+/gm, tabs => '    '.repeat(tabs.length)).trimEnd()
+for (const snippet of sourceSnippets) {
+  const path = resolve(repository, snippet.source)
+  if (!path.startsWith(serviceRoot + sep)) throw new Error(`Source path escapes service: ${snippet.source}`)
+  const actual = await readFile(path, 'utf8')
+  if (!displayIndent(actual).includes(displayIndent(snippet.code))) failures.push(`${snippet.file}: excerpt differs from ${snippet.source}`)
+}
+try {
+  await exec('go', ['test', '-mod=readonly', ...(race ? ['-race'] : []), '-count=1', '-timeout=30s', './...'], { cwd: serviceRoot, timeout: 120000 })
+  await exec('go', ['vet', '-mod=readonly', './...'], { cwd: serviceRoot, timeout: 120000 })
+  await exec('go', ['build', '-mod=readonly', './...'], { cwd: serviceRoot, timeout: 120000 })
+  console.log(`Large-service module: tests, vet, and build passed; ${sourceSnippets.length} lesson excerpts checked against source.`)
+} catch (error) {
+  failures.push(`large-service: ${error.stderr || error.message}`)
 }
 for (const file of excerpts) console.log(`Excerpt requiring its own module setup (not executed): ${file}`)
 for (const failure of failures) console.error(failure)

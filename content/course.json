@@ -105,6 +105,14 @@
           { "id": "functional_options", "title": "Functional options", "file": "part2_patterns/project/functional_options.md", "ref": "https://dave.cheney.net/2014/10/17/functional-options-for-friendly-apis", "tags": ["api-design"], "problem": "Offer optional configuration without a giant constructor." },
           { "id": "zero_values", "title": "Constructors & useful zero values", "file": "part2_patterns/project/zero_values.md", "ref": "https://go.dev/doc/effective_go#data", "tags": ["api-design", "types"], "problem": "Make types usable without an init step." },
           { "id": "small_interfaces", "title": "Small, consumer-side interfaces", "file": "part2_patterns/project/small_interfaces.md", "ref": "https://go.dev/doc/effective_go#interfaces_and_types", "tags": ["api-design", "interfaces"], "problem": "Depend on behaviour you need, not on concrete types." }
+        ]},
+        { "id": "large_service", "title": "Structuring a large Go service", "lessons": [
+          {"id": "boundaries", "title": "Structuring a large Go service", "file": "part2_patterns/large_service/boundaries.md", "ref": "https://go.dev/doc/modules/layout", "tags": ["project", "architecture"], "problem": "Choose package boundaries for a service with multiple domains."},
+          {"id": "endpoints", "title": "Multiple endpoints with one application", "file": "part2_patterns/large_service/endpoints.md", "ref": "https://pkg.go.dev/net/http#ServeMux", "tags": ["http", "architecture"], "problem": "Organize routes, handlers, validation, and error responses."},
+          {"id": "shared_clients", "title": "Shared external clients", "file": "part2_patterns/large_service/shared_clients.md", "ref": "https://pkg.go.dev/net/http#Client", "tags": ["http", "interfaces", "architecture"], "problem": "Reuse external clients across domains with explicit ownership."},
+          {"id": "cross_domain", "title": "Cross-domain workflows", "file": "part2_patterns/large_service/cross_domain.md", "ref": "https://go.dev/wiki/CodeReviewComments#interfaces", "tags": ["interfaces", "architecture"], "problem": "Coordinate domains through small contracts without import cycles."},
+          {"id": "shared_libraries", "title": "Shared libraries with clear owners", "file": "part2_patterns/large_service/shared_libraries.md", "ref": "https://go.dev/doc/modules/layout", "tags": ["modules", "api-design", "architecture"], "problem": "Share stable behavior without coupling unrelated domains."},
+          {"id": "testing_frameworks", "title": "Testing and framework choices", "file": "part2_patterns/large_service/testing_frameworks.md", "ref": "https://uber-go.github.io/fx/", "tags": ["testing", "http", "architecture"], "problem": "Verify boundaries and compare standard Go, chi, and Fx."}
         ]}
       ]
     },

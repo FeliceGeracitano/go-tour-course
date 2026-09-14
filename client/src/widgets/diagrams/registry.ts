@@ -1,6 +1,6 @@
 import { lazy, type ComponentType, type LazyExoticComponent } from 'react'
 
-export const DIAGRAM_IDS = ['slices-backing-array'] as const
+export const DIAGRAM_IDS = ['slices-backing-array', 'service-dependencies'] as const
 export type DiagramId = (typeof DIAGRAM_IDS)[number]
 export type DiagramProps = { props?: Record<string, unknown> }
 
@@ -9,5 +9,6 @@ export function isDiagramId(id: string): id is DiagramId {
 }
 
 export const diagrams: Record<DiagramId, LazyExoticComponent<ComponentType<DiagramProps>>> = {
+  'service-dependencies': lazy(() => import('./ServiceDependencies')),
   'slices-backing-array': lazy(() => import('./SlicesBackingArray')),
 }
