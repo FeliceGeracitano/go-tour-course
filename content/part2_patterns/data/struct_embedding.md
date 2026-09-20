@@ -34,7 +34,7 @@ code: |
   // Output:
   // Ada user:Ada
   // Lin
-hotspots: [{"line": 10, "match": "    Profile", "title": "Embedded value", "note": "The field is named Profile, and its eligible members can be promoted."}, {"line": 15, "match": "Profile: Profile{Name:", "title": "Initialise the actual field", "note": "Promoted fields cannot be used directly as keys of the outer struct literal."}, {"line": 16, "match": "u.Label()", "title": "Promoted method", "note": "This forwards to the embedded Profile method; it is not virtual dispatch."}]
+hotspots: [{"line": 10, "match": "    Profile", "title": "Embedded value", "note": "The field is named Profile, and its eligible members can be promoted."}, {"line": 15, "match": "Profile: Profile{Name:", "title": "Initialise the actual field", "note": "Naming the actual field works on every Go version. Go 1.27 additionally accepts promoted fields as keys, such as `User{Name: \"Ada\"}`; older language versions reject that."}, {"line": 16, "match": "u.Label()", "title": "Promoted method", "note": "This forwards to the embedded Profile method; it is not virtual dispatch."}]
 ```
 
 ## Promotion has consequences
@@ -57,10 +57,10 @@ contract before choosing pointer embedding.
 
 ```quiz
 type: "mcq"
-question: "Can User{Name: \"Ada\"} initialise the promoted field directly?"
-options: ["Yes", "No; initialise Profile: Profile{Name: \"Ada\"}", "Only when Name is exported"]
+question: "Which literal sets the embedded Profile's Name on every Go version since 1.18?"
+options: ["User{Name: \"Ada\"}", "User{Profile: Profile{Name: \"Ada\"}}", "User{Profile.Name: \"Ada\"}"]
 answer: 1
-explain: "Composite literal keys must name actual fields of User, not promoted fields."
+explain: "Naming the actual field works everywhere. Go 1.27 additionally accepts the promoted key User{Name: \"Ada\"}, but older language versions reject it, and a dotted key is never valid."
 ```
 
 ```quiz

@@ -49,9 +49,11 @@ type. These instantiations are distinct types: a Stack[int] is not a Stack[int64
 Methods redeclare the receiver's type parameter names as in `*Stack[T]`; the constraints
 come from the type declaration.
 
-Methods cannot introduce their own additional type parameter list. If an operation
-needs a new independent type, such as mapping a Stack[A] to a Stack[B], express it as a
-generic function with both parameters.
+Before Go 1.27, methods could not introduce their own additional type parameter list. If
+an operation needs a new independent type, such as mapping a Stack[A] to a Stack[B], the
+portable form is a generic function with both parameters. Go 1.27 adds generic methods
+with their own type parameters; modules declaring an older language version still reject
+them.
 
 Container design still needs ordinary ownership rules. Copying this Stack copies its
 slice header, so populated copies may share backing storage. Use it through one owner

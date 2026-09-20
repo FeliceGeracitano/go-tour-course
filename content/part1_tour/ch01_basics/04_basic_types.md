@@ -24,7 +24,7 @@ code: |
   )
 hotspots:
   - { line: 1, match: "var (", title: "Factored var block", note: "Like imports, `var` declarations can be grouped. `gofmt` aligns the names, types, and values into columns.", link: "https://go.dev/tour/basics/11" }
-  - { line: 3, match: "1<<64 - 1", title: "Constant arithmetic", note: "Untyped constants are evaluated with **arbitrary precision** at compile time. `1<<64` would overflow any variable, but as a constant expression `1<<64 - 1` is fine and fits `uint64` exactly." }
+  - { line: 3, match: "1<<64 - 1", title: "Constant arithmetic", note: "Untyped constants are evaluated with **arbitrary precision** at compile time. `1<<64` would overflow any integer type, but as a constant expression `1<<64 - 1` is fine and fits `uint64` exactly." }
   - { line: 4, match: "12i", title: "Imaginary literal", note: "`12i` is an imaginary constant; `-5 + 12i` is a complex constant. `cmplx` is the complex-number sibling of `math`." }
 ```
 

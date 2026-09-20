@@ -4,7 +4,7 @@
 assets, or small default data that should travel with the application. Changing an
 embedded source file requires rebuilding the binary.
 
-Create `assets/message.txt` beside your package directory with the contents `hello Go`
+Create `assets/message.txt` inside your package directory with the contents `hello Go`
 followed by a newline. Then put the following program in main.go in that package.
 
 ## Read the example

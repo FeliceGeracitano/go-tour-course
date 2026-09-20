@@ -40,12 +40,14 @@ question: Which line does not compile?
 code: |
   package main
 
+  import "fmt"
+
   x := 1
 
   func main() {
       fmt.Println(x)
   }
-answer: 3
+answer: 5
 explain: "`:=` is only allowed inside functions. At package level write `var x = 1`."
 ```
 
