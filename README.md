@@ -38,11 +38,6 @@ large-service example (add `-- --race` for the race detector). See
 - `client/` — Vite + React app
 - `examples/large-service/` — runnable Go service, tests, and optional chi/Fx adapters
 
-## Deploy
-
-Amplify uses `amplify.yml` to install the client dependencies, build the site, and
-publish `client/dist`. Configure the connected branch and an SPA rewrite in Amplify,
-since lesson URLs are real paths.
 
 ## Credits
 
