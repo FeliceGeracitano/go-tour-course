@@ -4,29 +4,58 @@ import { course, lessonPath, type Chapter, type Part } from '../content/manifest
 import { useProgress } from '../store/progress'
 import ProgressRing from './ProgressRing'
 
+const allChapterIds = course.parts.flatMap((p) => p.chapters.map((c) => c.id))
+
 export default function Sidebar() {
   const { chapterId } = useParams()
   const progress = useProgress()
   const [open, setOpen] = useState<Set<string>>(() => new Set(chapterId ? [chapterId] : []))
+
+  // Expand the chapter being navigated into. Adjusting state during render (rather than
+  // in an effect) avoids painting a frame where the new chapter is still collapsed.
+  const [seenChapter, setSeenChapter] = useState(chapterId)
+  if (chapterId !== seenChapter) {
+    setSeenChapter(chapterId)
+    if (chapterId && !open.has(chapterId)) setOpen((s) => new Set(s).add(chapterId))
+  }
+
   const toggle = (id: string) => setOpen((s) => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n })
+  const expandAll = () => setOpen(new Set(allChapterIds))
+  const collapseAll = () => setOpen(new Set())
+  const allOpen = allChapterIds.every((id) => open.has(id))
+  const noneOpen = allChapterIds.every((id) => !open.has(id))
 
   return (
     <nav aria-label="Course" className="text-sm">
+      <div className="mb-2 flex items-center justify-end gap-1 px-1 text-xs text-muted">
+        <BulkButton onClick={expandAll} disabled={allOpen}>Expand all</BulkButton>
+        <span aria-hidden="true">·</span>
+        <BulkButton onClick={collapseAll} disabled={noneOpen}>Collapse all</BulkButton>
+      </div>
       {course.parts.map((part) => (
-        <PartBlock key={part.id} part={part} openIds={open} currentChapter={chapterId} onToggle={toggle} done={(id) => progress.lessons[id]?.done === true} />
+        <PartBlock key={part.id} part={part} openIds={open} onToggle={toggle} done={(id) => progress.lessons[id]?.done === true} />
       ))}
     </nav>
   )
 }
 
-function PartBlock({ part, openIds, currentChapter, onToggle, done }: {
-  part: Part; openIds: Set<string>; currentChapter?: string; onToggle: (id: string) => void; done: (lessonId: string) => boolean
+function BulkButton({ onClick, disabled, children }: { onClick: () => void; disabled: boolean; children: string }) {
+  return (
+    <button type="button" onClick={onClick} disabled={disabled}
+      className="rounded px-1.5 py-0.5 hover:bg-surface-2 hover:text-text disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-muted">
+      {children}
+    </button>
+  )
+}
+
+function PartBlock({ part, openIds, onToggle, done }: {
+  part: Part; openIds: Set<string>; onToggle: (id: string) => void; done: (lessonId: string) => boolean
 }) {
   return (
     <div className="mb-4">
       <div className="mb-1 px-2 text-[11px] font-semibold uppercase tracking-wider text-muted">{part.title}</div>
       {part.chapters.map((ch) => (
-        <ChapterBlock key={ch.id} part={part} chapter={ch} open={openIds.has(ch.id) || ch.id === currentChapter} onToggle={() => onToggle(ch.id)} done={done} />
+        <ChapterBlock key={ch.id} part={part} chapter={ch} open={openIds.has(ch.id)} onToggle={() => onToggle(ch.id)} done={done} />
       ))}
     </div>
   )
